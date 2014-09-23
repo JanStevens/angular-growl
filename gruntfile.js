@@ -4,7 +4,7 @@ module.exports = function (grunt) {
 	grunt.initConfig({
 
 		pkg: grunt.file.readJSON('bower.json'),
-
+        icons : grunt.option('icons') || 'dark',
 		language: grunt.option('lang') || 'en',
 
 		meta: {
@@ -26,7 +26,8 @@ module.exports = function (grunt) {
 				'src/growlMessageService.js'
 			],
 			css:  [
-				'src/growl.css'
+				'src/growl.css',
+				'src/growl.<%= icons %>.css',
 			],
 			test: ['test/**/*.js']
 		},
