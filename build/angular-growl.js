@@ -53,21 +53,21 @@ angular.module('angular-growl').directive('growl', [function () {
             var classes = {};
             if ($scope.foundationEnabled) {
               classes = {
+                'alert-box success': message.severity === 'success',
+                'alert-box alert': message.severity === 'error',
+                'alert-box': message.severity === 'info',
+                'alert-box warning': message.severity === 'warning'
+              };
+            } else {
+              classes = {
                 'alert alert-success': message.severity === 'success',
                 'alert alert-error': message.severity === 'error',
                 'alert alert-danger': message.severity === 'error',
                 'alert alert-info': message.severity === 'info',
                 'alert alert-warning': message.severity === 'warning'
               };
-            } else {
-              classes = {
-                'alert-box success': message.severity === 'success',
-                'alert-box alert': message.severity === 'error',
-                'alert-box': message.severity === 'info',
-                'alert-box warning': message.severity === 'warning'
-              };
             }
-            return basic.concat(classes);
+            return angular.extend(basic, classes);
           };
           $scope.showCountDown = function (message) {
             return !message.disableCountDown && message.ttl > 0;

@@ -51,6 +51,13 @@ angular.module("angular-growl").directive("growl", [
                         };
                         var classes = {};
                         if ($scope.foundationEnabled) {
+                            classes = { // Zurb Foundation
+                                'alert-box success': message.severity === "success",
+                                'alert-box alert': message.severity === "error",
+                                'alert-box': message.severity === "info",
+                                'alert-box warning': message.severity === "warning"
+                            };
+                        } else {
                             classes = {
                                 'alert alert-success': message.severity === "success",
                                 'alert alert-error': message.severity === "error", //bootstrap 2.3
@@ -58,15 +65,8 @@ angular.module("angular-growl").directive("growl", [
                                 'alert alert-info': message.severity === "info",
                                 'alert alert-warning': message.severity === "warning" //bootstrap 3, no effect in bs 2.3
                             };
-                        } else {
-                            classes = { // Zurb Foundation
-                                'alert-box success': message.severity === "success",
-                                'alert-box alert': message.severity === "error",
-                                'alert-box': message.severity === "info",
-                                'alert-box warning': message.severity === "warning"
-                            };
                         }
-                        return basic.concat(classes);
+                        return angular.extend(basic, classes);
                     };
 
                     $scope.showCountDown = function (message) {

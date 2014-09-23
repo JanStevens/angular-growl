@@ -24,13 +24,13 @@ module.exports = function (grunt) {
             'src/growlFactory.js',
             'src/growlMessageService.js'
             ],
-            cssdark: [
+            cssbootstrap: [
             'src/growl.css',
-            'src/growl.dark.css'
+            'src/growl.bootstrap.css'
             ],
-            csswhite: [
+            cssfoundation: [
             'src/growl.css',
-            'src/growl.white.css'
+            'src/growl.foundation.css'
             ],
             test: ['test/**/*.js']
         },
@@ -83,34 +83,34 @@ module.exports = function (grunt) {
                 src: ['<%= lib_files.core %>'],
                 dest: '<%= build_dir %>/angular-growl.js'
             },
-            cssdark: {
+            cssbootstrap: {
                 options: {
                     banner: '<%= meta.banner %>'
                 },
-                src: ['<%= lib_files.cssdark %>'],
-                dest: '<%= build_dir %>/angular-growl-dark.css'
+                src: ['<%= lib_files.cssbootstrap %>'],
+                dest: '<%= build_dir %>/angular-growl-bootstrap.css'
             },
-            csswhite: {
+            cssfoundation: {
                 options: {
                     banner: '<%= meta.banner %>'
                 },
-                src: ['<%= lib_files.csswhite %>'],
-                dest: '<%= build_dir %>/angular-growl-white.css'
+                src: ['<%= lib_files.cssfoundation %>'],
+                dest: '<%= build_dir %>/angular-growl-foundation.css'
             }
         },
         cssmin: {
-            coredark: {
+            corebootrap: {
                 files: {
-                    'build/angular-growl.dark.min.css': '<%= lib_files.cssdark %>'
+                    'build/angular-growl.bootstrap.min.css': '<%= lib_files.cssbootstrap %>'
                 },
                 options: {
                     'banner': '<%= meta.banner %>',
                     'report': 'gzip'
                 }
             },
-            corewhite: {
+            corefoundation: {
                 files: {
-                    'build/angular-growl.white.min.css': '<%= lib_files.csswhite %>'
+                    'build/angular-growl.foundation.min.css': '<%= lib_files.cssfoundation %>'
                 },
                 options: {
                     'banner': '<%= meta.banner %>',
@@ -151,7 +151,7 @@ module.exports = function (grunt) {
                 addFiles: ['.'], // '.' for all files except ingored files in .gitignore
                 commit: true,
                 commitMessage: 'Release v%VERSION%',
-                commitFiles: ['package.json', 'bower.json', 'build/angular-growl.js', 'build/angular-growl.min.js', 'build/angular-growl.dark.min.css', 'build/angular-growl.white.min.css', 'README.md'], // '-a' for all files
+                commitFiles: ['package.json', 'bower.json', 'build/angular-growl.js', 'build/angular-growl.min.js', 'build/angular-growl.bootstrap.min.css', 'build/angular-growl.foundation.min.css', 'README.md'], // '-a' for all files
                 createTag: true,
                 tagName: 'v%VERSION%',
                 tagMessage: 'Version %VERSION%',
@@ -176,13 +176,13 @@ module.exports = function (grunt) {
 
     grunt.registerTask('build:core', [
       'concat:core',
-      'concat:cssdark',
-      'concat:csswhite',
+      'concat:cssbootstrap',
+      'concat:cssfoundation',
       'ngmin:core',
       'concat:banner',
       'uglify:core',
-      'cssmin:coredark',
-      'cssmin:corewhite',
+      'cssmin:corebootrap',
+      'cssmin:corefoundation',
      ]);
 
     // For development purpose.
