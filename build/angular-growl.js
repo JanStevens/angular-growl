@@ -1,5 +1,5 @@
 /**
- * angular-growl-v2 - v0.7.1 - 2014-09-11
+ * angular-growl-v2 - v0.7.1 - 2014-09-23
  * http://janstevens.github.io/angular-growl-2
  * Copyright (c) 2014 Marco Rinck,Jan Stevens; Licensed MIT
  */
@@ -13,7 +13,8 @@ angular.module('angular-growl').directive('growl', [function () {
       scope: {
         reference: '@',
         inline: '@',
-        limitMessages: '='
+        limitMessages: '=',
+        foundation: '@'
       },
       controller: [
         '$scope',
@@ -31,6 +32,7 @@ angular.module('angular-growl').directive('growl', [function () {
               directive.limitMessages = limitMessages;
             }
           });
+          $scope.foundationEnabled = $scope.foundation || false;
           $scope.stopTimeoutClose = function (message) {
             if (!message.clickToClose) {
               angular.forEach(message.promises, function (promise) {
@@ -44,15 +46,28 @@ angular.module('angular-growl').directive('growl', [function () {
             }
           };
           $scope.alertClasses = function (message) {
-            return {
-              'alert-success': message.severity === 'success',
-              'alert-error': message.severity === 'error',
-              'alert-danger': message.severity === 'error',
-              'alert-info': message.severity === 'info',
-              'alert-warning': message.severity === 'warning',
-              'icon': message.disableIcons === false,
-              'alert-dismissable': !message.disableCloseButton
-            };
+            var basic = {
+                'icon': message.disableIcons === false,
+                'alert-dismissable': !message.disableCloseButton
+              };
+            var classes = {};
+            if ($scope.foundationEnabled) {
+              classes = {
+                'alert-box success': message.severity === 'success',
+                'alert-box alert': message.severity === 'error',
+                'alert-box': message.severity === 'info',
+                'alert-box warning': message.severity === 'warning'
+              };
+            } else {
+              classes = {
+                'alert alert-success': message.severity === 'success',
+                'alert alert-error': message.severity === 'error',
+                'alert alert-danger': message.severity === 'error',
+                'alert alert-info': message.severity === 'info',
+                'alert alert-warning': message.severity === 'warning'
+              };
+            }
+            return angular.extend(basic, classes);
           };
           $scope.showCountDown = function (message) {
             return !message.disableCountDown && message.ttl > 0;
@@ -81,7 +96,7 @@ angular.module('angular-growl').run([
   function ($templateCache) {
     'use strict';
     if ($templateCache.get('templates/growl/growl.html') === undefined) {
-      $templateCache.put('templates/growl/growl.html', '<div class="growl-container" ng-class="wrapperClasses()">' + '<div class="growl-item alert" ng-repeat="message in growlMessages.directives[referenceId].messages" ng-class="alertClasses(message)" ng-click="stopTimeoutClose(message)">' + '<button type="button" class="close" data-dismiss="alert" aria-hidden="true" ng-click="growlMessages.deleteMessage(message)" ng-show="!message.disableCloseButton">&times;</button>' + '<button type="button" class="close" aria-hidden="true" ng-show="showCountDown(message)">{{message.countdown}}</button>' + '<h4 class="growl-title" ng-show="message.title" ng-bind="message.title"></h4>' + '<div class="growl-message" ng-bind-html="message.text"></div>' + '</div>' + '</div>');
+      $templateCache.put('templates/growl/growl.html', '<div class="growl-container" ng-class="wrapperClasses()">' + '<div class="growl-item" ng-repeat="message in growlMessages.directives[referenceId].messages" ng-class="alertClasses(message)" ng-click="stopTimeoutClose(message)">' + '<button type="button" class="close" data-dismiss="alert" aria-hidden="true" ng-click="growlMessages.deleteMessage(message)" ng-show="!message.disableCloseButton">&times;</button>' + '<button type="button" class="close" aria-hidden="true" ng-show="showCountDown(message)">{{message.countdown}}</button>' + '<h4 class="growl-title" ng-show="message.title" ng-bind="message.title"></h4>' + '<div class="growl-message" ng-bind-html="message.text"></div>' + '</div>' + '</div>');
     }
   }
 ]);
@@ -229,13 +244,17 @@ angular.module('angular-growl').provider('growl', function () {
       function success(text, config) {
         return sendMessage(text, config, 'success');
       }
+      function general(text, config, severity) {
+        severity = (severity || 'error').toLowerCase();
+        sendMessage(text, config, severity);
+      }
       function addServerMessages(messages) {
         var i, message, severity, length;
         length = messages.length;
         for (i = 0; i < length; i++) {
           message = messages[i];
           if (message[_messageTextKey]) {
-            severity = message[_messageSeverityKey] || 'error';
+            severity = (message[_messageSeverityKey] || 'error').toLowerCase();
             var config = {};
             config.variables = message[_messageVariableKey] || {};
             config.title = message[_messageTitleKey];
@@ -260,6 +279,7 @@ angular.module('angular-growl').provider('growl', function () {
         error: error,
         info: info,
         success: success,
+        general: general,
         addServerMessages: addServerMessages,
         onlyUnique: onlyUnique,
         reverseOrder: reverseOrder,
