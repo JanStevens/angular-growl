@@ -1,5 +1,5 @@
 /**
- * angular-growl-v2 - v0.7.1 - 2014-09-23
+ * angular-growl-v2 - v0.7.1 - 2014-09-24
  * http://janstevens.github.io/angular-growl-2
  * Copyright (c) 2014 Marco Rinck,Jan Stevens; Licensed MIT
  */
@@ -92,33 +92,33 @@
 .growl-item.icon > .growl-message {
   margin: 0 0 0 40px;
 }
-.growl-item button.close {
-    padding: 0px;
-    background: none repeat scroll 0px 0px transparent;
-    border: 0px none;
-}
-.growl-item .close:hover,
-.close:focus {
-    color: #000;
-    text-decoration: none;
-    cursor: pointer;
-    opacity: 0.5;
-}
-.growl-item button:hover,
-button:focus,
-.button:hover,
-.button:focus {
-    background-color: inherit;
-}
-.growl-item .close {
-    float: right;
-    font-size: 21px;
-    font-weight: 700;
-    line-height: 1;
-    color: #000;
-    text-shadow: 0px 1px 0px #FFF;
-    opacity: 0.4;
-}
+ .growl-item button.close {
+     padding: 0px;
+     background: none repeat scroll 0px 0px transparent;
+     border: 0px none;
+ }
+ .growl-item .close:hover,
+ .growl-item .close:focus {
+     color: #000;
+     text-decoration: none;
+     cursor: pointer;
+     opacity: 0.6;
+ }
+ .growl-item button:hover,
+ .growl-item button:focus,
+ .growl-item .button:hover,
+ .growl-item .button:focus {
+     background-color: inherit;
+ }
+ .growl-item .close {
+     float: right;
+     font-size: 21px;
+     font-weight: 700;
+     line-height: 1;
+     color: #000;
+     text-shadow: 0px 1px 0px #FFF;
+     opacity: 0.4;
+ }
 /*
  * growl background images
  */
