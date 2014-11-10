@@ -15,7 +15,7 @@ angular.module("angular-growl").provider("growl", function () {
         _disableIcons = false,
         _reverseOrder = false,
         _disableCountDown = false,
-        _translateMessages = false;
+        _translateMessages = true;
 
     /**
      * set a global timeout (time to live) after which messages will be automatically closed
