@@ -47,7 +47,7 @@ angular.module("angular-growl").provider("growl", function () {
         _disableCloseButton = disableCloseButton;
     };
     /**
-     * set whether the messages should be translated (default:false) when the translator is available
+     * set whether the messages should be translated (default:true) when the translator is available
      *
      * @param {bool} translateMessages true to to translate all messages
      */
