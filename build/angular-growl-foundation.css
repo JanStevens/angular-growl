@@ -10,7 +10,7 @@
   position: fixed;
   float: right;
   width: 90%;
-  max-width: 400px;
+  max-width: 500px;
   z-index: 9999;
 }
 .growl-container.growl-fixed.top-right {
