@@ -28,10 +28,11 @@ angular.module("angular-growl").directive("growl", [
 
           //Cancels all promises within message upon deleting message or stop deleting.
           $scope.stopTimeoutClose = function (message) {
-            if (!message.clickToClose) {
-              angular.forEach(message.promises, function (promise) {
-                $interval.cancel(promise);
-              });
+            angular.forEach(message.promises, function (promise) {
+              $interval.cancel(promise);
+            });
+
+            if (!message.disableUserClose){
               if (message.close) {
                 growlMessages.deleteMessage(message);
               } else {
@@ -84,7 +85,7 @@ angular.module("angular-growl").run(['$templateCache', function ($templateCache)
     $templateCache.put("templates/growl/growl.html",
       '<div class="growl-container" ng-class="wrapperClasses()">' +
       '<div class="growl-item alert" ng-repeat="message in growlMessages.directives[referenceId].messages" ng-class="alertClasses(message)" ng-click="stopTimeoutClose(message)">' +
-      '<button type="button" class="close" data-dismiss="alert" aria-hidden="true" ng-click="growlMessages.deleteMessage(message)" ng-if="!message.disableCloseButton">&times;</button>' +
+      '<button type="button" class="close" data-dismiss="alert" aria-hidden="true" ng-click="growlMessages.deleteMessage(message)" ng-if="!message.disableCloseButton && !message.disableUserClose">&times;</button>' +
       '<button type="button" class="close" aria-hidden="true" ng-if="showCountDown(message)">{{message.countdown}}</button>' +
       '<h4 class="growl-title" ng-if="message.title" ng-bind="message.title"></h4>' +
       '<div class="growl-message" ng-bind-html="message.text"></div>' +
