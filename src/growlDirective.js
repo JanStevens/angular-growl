@@ -9,7 +9,9 @@ angular.module("angular-growl").directive("growl", [
       scope: {
         reference: '@',
         inline: '=',
-        limitMessages: '='
+        limitMessages: '=',
+        styles: '=', // custom css styles defined as json for each severity name {success: 'alert-thumbs-up'}
+        icons: '=' // custom icon styles defined as json for each severity name {success: 'icon-thumbs-up'}
       },
       controller: ['$scope', '$interval', 'growl', 'growlMessages',
         function ($scope, $interval, growl, growlMessages) {
@@ -39,17 +41,20 @@ angular.module("angular-growl").directive("growl", [
               }
             }
           };
-
+          
           $scope.alertClasses = function (message) {
-            return {
-              'alert-success': message.severity === "success",
-              'alert-error': message.severity === "error", //bootstrap 2.3
-              'alert-danger': message.severity === "error", //bootstrap 3
-              'alert-info': message.severity === "info",
-              'alert-warning': message.severity === "warning", //bootstrap 3, no effect in bs 2.3
-              'icon': message.disableIcons === false,
+            var _alertClasses = {};
+
+            var _alertClasses = {
               'alert-dismissable': !message.disableCloseButton
             };
+
+            for (var _severity in message.severityNames()) {
+              var _styleClasses = $scope.styles === undefined || $scope.styles[_severity] === undefined ? message.styleClasses()[_severity] : $scope.styles[_severity];
+              _alertClasses[_styleClasses] = message.severity === _severity;
+            }
+            
+            return _alertClasses;
           };
 
           $scope.showCountDown = function (message) {
@@ -86,8 +91,9 @@ angular.module("angular-growl").run(['$templateCache', function ($templateCache)
       '<div class="growl-item alert" ng-repeat="message in growlMessages.directives[referenceId].messages" ng-class="alertClasses(message)" ng-click="stopTimeoutClose(message)">' +
       '<button type="button" class="close" data-dismiss="alert" aria-hidden="true" ng-click="growlMessages.deleteMessage(message)" ng-if="!message.disableCloseButton">&times;</button>' +
       '<button type="button" class="close" aria-hidden="true" ng-if="showCountDown(message)">{{message.countdown}}</button>' +
+      '<span ng-class="iconClasses(message)" aria-hidden="true"></span>' +
       '<h4 class="growl-title" ng-if="message.title" ng-bind="message.title"></h4>' +
-      '<div class="growl-message" ng-bind-html="message.text"></div>' +
+      '<span class="growl-message" ng-bind-html="message.text"></span>' +
       '</div>' +
       '</div>'
     );

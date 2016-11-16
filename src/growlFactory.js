@@ -17,7 +17,13 @@ angular.module("angular-growl").provider("growl", function () {
     _disableIcons = false,
     _reverseOrder = false,
     _disableCountDown = false,
-    _translateMessages = true;
+    _translateMessages = true,
+    _defaultSeverity = "error",
+    _severityNames = ["success", "info", "warning", "error"],
+    _iconClasses = {"success": "icon alert-success", "info": "icon alert-info", "warning": "icon alert-warning",
+                     "error": "icon alert-error"},
+    _styleClasses = {"success": "alert-success", "info": "alert-info", "warning": "alert-warning",
+                     "error": "alert-error"};
 
   /**
    * set a global timeout (time to live) after which messages will be automatically closed
@@ -120,6 +126,71 @@ angular.module("angular-growl").provider("growl", function () {
     _position = position;
     return this;
   };
+
+  /**
+   * set the default severity name used when message's severity is not defined
+   *
+   * @param  {string} defaultSeverity default: "error"
+   */
+  this.globalDefaultSeverity = function (defaultSeverity) {
+    _defaultSeverity = defaultSeverity;
+    return this;
+  };
+
+  /**
+   * set accepted severity names
+   *
+   * @param  {string[]} severityNames default: ["success", "info", "warning", "error"]
+   */
+  this.globalSeverityNames = function (severityNames) {
+    _severityNames = severityNames;
+    return this;
+  };
+
+  /**
+   * sets the message icon classes to use related to a severity.
+   *
+   * @param {object} iconClasses default: 
+   *     {success: 'icon alert-success', info: 'icon alert-info', warning: 'icon alert-warning',
+   *      error: 'icon alert-error'}
+   */
+  this.globalIconClasses = function (iconClasses) {
+    if (iconClasses) {
+      // only change the styles defined by the user
+      // if not added to customized object then don't change default one
+      if (typeof iconClasses === 'object') {
+        for (var k in iconClasses) {
+          if (iconClasses.hasOwnProperty(k)) {
+            _iconClasses[k] = iconClasses[k];
+          }
+        }
+      }
+    }
+    return this;
+  };
+
+  /**
+   * sets the growl style classes to use related to a severity.
+   *
+   * @param {object} styleClasses default: 
+   *     {success: 'alert-success', info: 'alert-info', warning: 'alert-warning',
+   *      error: 'alert-error'}
+   */
+  this.globalStyleClasses = function (styleClasses) {
+    if (styleClasses) {
+      // only change the styles defined by the user
+      // if not added to customized object then don't change default one
+      if (typeof styleClasses === 'object') {
+        for (var k in styleClasses) {
+          if (styleClasses.hasOwnProperty(k)) {
+            _styleClasses[k] = styleClasses[k];
+          }
+        }
+      }
+    }
+    return this;
+  };
+
   /**
    * sets the key in $http response the serverMessagesInterecptor is looking for server-sent messages, value of key
    * needs to be an array of objects
@@ -253,6 +324,8 @@ angular.module("angular-growl").provider("growl", function () {
         position: _config.position || _position,
         referenceId: _config.referenceId || _referenceId,
         translateMessage: _config.translateMessage === undefined ? _translateMessages : _config.translateMessage,
+        styleClasses: (_config.styleClasses === undefined || _config.styleClasses[severity] === undefined) ? _styleClasses.success : _config.styleClasses[severity],
+        iconClasses: (_config.iconClasses === undefined || _config.iconClasses[severity] === undefined) ? _iconClasses.success : _config.iconClasses[severity],
         destroy: function () {
           growlMessages.deleteMessage(message);
         },
@@ -314,7 +387,7 @@ angular.module("angular-growl").provider("growl", function () {
      * @param {string} severity
      */
     function general (text, config, severity) {
-      severity = (severity || "error").toLowerCase();
+      severity = (severity || _defaultSeverity).toLowerCase();
       return sendMessage(text, config, severity);
     }
 
@@ -333,7 +406,7 @@ angular.module("angular-growl").provider("growl", function () {
         message = messages[i];
 
         if (message[_messageTextKey]) {
-          severity = (message[_messageSeverityKey] || "error").toLowerCase();
+          severity = (message[_messageSeverityKey] || _defaultSeverity).toLowerCase();
           var config = {};
           config.variables = message[_messageVariableKey] || {};
           config.title = message[_messageTitleKey];
@@ -363,6 +436,18 @@ angular.module("angular-growl").provider("growl", function () {
     function position () {
       return _position;
     }
+    
+    function severityNames() {
+      return _severityNames;
+    }
+
+    function iconClasses () {
+      return _iconClasses;
+    }
+
+    function styleClasses () {
+      return _styleClasses;
+    }
 
     return {
       warning: warning,
@@ -374,7 +459,10 @@ angular.module("angular-growl").provider("growl", function () {
       onlyUnique: onlyUnique,
       reverseOrder: reverseOrder,
       inlineMessages: inlineMessages,
-      position: position
+      position: position,
+      severityNames: severityNames,
+      iconClasses: iconClasses,
+      styleClasses: styleClasses
     };
   }];
 });
