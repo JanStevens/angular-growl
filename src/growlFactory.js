@@ -147,8 +147,8 @@ angular.module("angular-growl").provider("growl", function() {
    */
   this.serverMessagesInterceptor = ['$q', 'growl', function ($q, growl) {
     function checkResponse(response) {
-      if (response.data[_messagesKey] && response.data[_messagesKey].length > 0) {
-        growl.addServerMessages(response.data[_messagesKey]);
+      if (response.data && response.data[_messagesKey] && response.data[_messagesKey].length > 0) {
+        growl.addServerMessages(response.data[_messagesKey],type);
       }
     }
 
@@ -158,7 +158,7 @@ angular.module("angular-growl").provider("growl", function() {
           return response;
       },
       'responseError': function (rejection) {
-        checkResponse(rejection);
+        checkResponse(rejection,'error');
           return $q.reject(rejection);
         }
       };
@@ -273,8 +273,14 @@ angular.module("angular-growl").provider("growl", function() {
      *
      * @param {Array.<object>} messages
      */
-    function addServerMessages(messages) {
+    function addServerMessages(messages,type) {
       var i, message, severity, length;
+	  if(!angular.isArray(messages)){
+            var temp = {};
+            temp[_messageTextKey]=messages;
+            temp[_messageSeverityKey]= type || 'success';
+            messages = [temp];
+      }
       length = messages.length;
       for (i = 0; i < length; i++) {
         message = messages[i];
