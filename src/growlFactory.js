@@ -260,7 +260,8 @@ angular.module("angular-growl").provider("growl", function () {
           message.text = $sce.trustAsHtml(String(newText));
         },
         onclose: _config.onclose,
-        onopen: _config.onopen
+        onopen: _config.onopen,
+        onclick: _config.onclick
       };
 
       return broadcastMessage(message);
